@@ -234,6 +234,8 @@ impl Ord for EvPtrMinCost {
         self.0.borrow().cost
             .partial_cmp(&other.0.borrow().cost)
             .unwrap_or(Ordering::Equal)
+            // Vertex order before addresses, which change from run to run.
+            .then_with(|| self.0.borrow().idx.cmp(&other.0.borrow().idx))
             .then_with(|| {
                 let ptr1 = Rc::as_ptr(&self.0) as usize;
                 let ptr2 = Rc::as_ptr(&other.0) as usize;
@@ -256,6 +258,8 @@ impl Ord for EvPtrMaxPosX {
         other.0.borrow().pos.x
             .partial_cmp(&self.0.borrow().pos.x)
             .unwrap_or(Ordering::Equal)
+            // Vertex order before addresses, which change from run to run.
+            .then_with(|| self.0.borrow().idx.cmp(&other.0.borrow().idx))
             .then_with(|| {
                 let ptr1 = Rc::as_ptr(&self.0) as usize;
                 let ptr2 = Rc::as_ptr(&other.0) as usize;
